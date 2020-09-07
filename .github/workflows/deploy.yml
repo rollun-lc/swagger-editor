@@ -23,14 +23,8 @@ jobs:
         run:
           npm run predev
           npm run build
-      - name: Lint
-        run: npm run lint
-      - name: e2e tests
-        run: npm run e2e
       - name: Test
         run: npm test
-      - name: Security
-        run: npm run security-audit
 #      - name: Docker login
 #        run: docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
 #      - name: Build

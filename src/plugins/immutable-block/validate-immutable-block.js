@@ -3,17 +3,6 @@ import {hashFnv32a, immutableBlockFooter, immutableBlockHeader} from "./utils"
 export const validateImmutableBlock = (spec) => (system) => {
 
   const errType = "immutable-block-error"
-  const allErrors = system.errSelectors.allErrors()
-
-  const errorExists = allErrors.size !== 0 &&
-    !!allErrors._tail.array
-      .find(({_root: {entries}}) =>
-        entries.find(([key, val]) => {
-          return key === "message" && val.indexOf(errType) === 0
-        })
-      )
-
-  console.log("validator", allErrors, errorExists)
 
   const errorReporter = (msg, line) => {
     system.errActions.newThrownErr({
@@ -59,16 +48,6 @@ export const validateImmutableBlock = (spec) => (system) => {
     }
   }
 
-
-  // system.errActions.newThrownErr({
-  //   message: `${errType}: errrrrrorrrr`,
-  //   line: 50
-  // })
-
-  // system.errActions.clearBy((err) => {
-  //   console.log("err", err)
-  //   return !err._root.entries.find(([key, val]) => key === "message" && val.indexOf(errType) === 0)
-  // })
 }
 
 export const validateImmutableBlockWrap = (ori, system) => (...args) => {
