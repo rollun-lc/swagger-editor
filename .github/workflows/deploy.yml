@@ -25,11 +25,11 @@ jobs:
           npm run build
       - name: Test
         run: npm test
-#      - name: Docker login
-#        run: docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
-#      - name: Build
-#        run: docker build -f Dockerfile -t docker.pkg.github.com/rollun-com/service-health-checker/service-health-checker:latest .
-#      - name: Push
-#        run: docker push docker.pkg.github.com/rollun-com/service-health-checker/service-health-checker:latest
-#      - name: Deploy D2C
-#        run: wget ${{ secrets.D2C_DEPLOY_WEBHOOK }}
+      - name: Docker login
+        run: docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+      - name: Build
+        run: docker build -f Dockerfile -t docker.pkg.github.com/rollun-com/swagger-editor/swagger-editor:latest .
+      - name: Push
+        run: docker push docker.pkg.github.com/rollun-com/swagger-editor/swagger-editor:latest
+      - name: Deploy D2C
+        run: wget ${{ secrets.D2C_DEPLOY_WEBHOOK }}
