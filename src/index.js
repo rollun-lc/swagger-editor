@@ -16,9 +16,10 @@ import PerformancePlugin from "./plugins/performance"
 import JumpToPathPlugin from "./plugins/jump-to-path"
 import SplitPaneModePlugin from "./plugins/split-pane-mode"
 import ASTPlugin from "./plugins/ast"
+import ImmutableBlock from "./plugins/immutable-block"
 
 // eslint-disable-next-line no-undef
-const { GIT_DIRTY, GIT_COMMIT, PACKAGE_VERSION } = buildInfo
+const {GIT_DIRTY, GIT_COMMIT, PACKAGE_VERSION} = buildInfo
 
 window.versions = window.versions || {}
 window.versions.swaggerEditor = `${PACKAGE_VERSION}/${GIT_COMMIT || "unknown"}${GIT_DIRTY ? "-dirty" : ""}`
@@ -37,6 +38,7 @@ const plugins = {
   JumpToPathPlugin,
   SplitPaneModePlugin,
   ASTPlugin,
+  ImmutableBlock
 }
 
 const defaults = {

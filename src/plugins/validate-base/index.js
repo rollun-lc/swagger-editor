@@ -18,7 +18,6 @@ export const updateJsonSpec = (ori, {specActions}) => (...args) => {
 
 //eslint-disable-next-line no-unused-vars
 export const validateSpec = (jsSpec) => ({ specSelectors, errActions }) => {
-
 }
 
 export default function() {
