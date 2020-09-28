@@ -1,4 +1,5 @@
 import {hashFnv32a, immutableBlockFooter, immutableBlockHeader} from "./utils"
+import {clearErrorsByType}                                      from "../refs-util"
 
 export const validateImmutableBlock = (spec) => (system) => {
 
@@ -11,9 +12,7 @@ export const validateImmutableBlock = (spec) => (system) => {
     })
   }
 
-  system.errActions.clearBy((err) => {
-    return !err._root.entries.find(([key, val]) => key === "message" && val.indexOf(errType) === 0)
-  })
+  clearErrorsByType(errType, system.errActions.clearBy)
 
   const lines = spec.split("\n")
 
