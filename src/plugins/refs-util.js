@@ -1,5 +1,4 @@
 import qs         from "querystring-browser"
-import {ERR_TYPE} from "./validate-rollun-semantic"
 
 /**
  * Unescapes a JSON pointer.
