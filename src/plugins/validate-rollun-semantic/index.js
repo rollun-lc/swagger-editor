@@ -1,5 +1,5 @@
-import {validateForbiddenKeys, validateTags} from "./validators"
-import {updateJsonSpec, updateSpec}          from "./actions"
+import {validateForbiddenKeys, validateTags, validateVersion} from "./validators"
+import {updateJsonSpec, updateSpec}                           from "./actions"
 
 export const ERR_TYPE = "rollun-semantic"
 
@@ -9,7 +9,8 @@ export default function () {
       spec: {
         actions: {
           validateForbiddenKeys,
-          validateTags
+          validateTags,
+          validateVersion
         },
         wrapActions: {
           updateSpec,

@@ -37,3 +37,17 @@ export const validateTags = (JSONSpec) => ({errActions}) => {
     }
   }
 }
+
+
+export const validateVersion = (JSONSpec) => ({errActions}) => {
+
+  clearErrorsByType(ERR_TYPE + "-version", errActions.clearBy)
+
+  if (JSONSpec && JSONSpec.info) {
+    if (!/^[1-9][0-9]{0,3}$/.test(JSONSpec.info.version)) {
+      errActions.newThrownErr({
+        message: `${ERR_TYPE}-version: Version must be a valid integer, less than 999!`
+      })
+    }
+  }
+}
