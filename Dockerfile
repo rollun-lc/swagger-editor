@@ -6,8 +6,6 @@ RUN mkdir -p /run/nginx
 
 COPY nginx.conf /etc/nginx/
 
-RUN npm run build
-
 # copy swagger files to the `/js` folder
 COPY ./index.html /usr/share/nginx/html/
 ADD ./dist/*.js /usr/share/nginx/html/dist/

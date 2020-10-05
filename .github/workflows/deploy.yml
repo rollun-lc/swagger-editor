@@ -20,13 +20,15 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Build
-        run:
+        run: |
           npm run predev
           npm run build
       - name: Test
         run: npm test
       - name: Docker login
         run: docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+      - name: LS
+        run: ls -la
       - name: Build
         run: docker build -f Dockerfile -t docker.pkg.github.com/rollun-com/swagger-editor/swagger-editor:latest .
       - name: Push
