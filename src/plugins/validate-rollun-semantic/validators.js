@@ -1,4 +1,4 @@
-import {ERR_TYPE}          from "./index"
+import {ERR_TYPE} from "./index"
 import {clearErrorsByType} from "../refs-util"
 
 export const validateForbiddenKeys = (spec) => ({errActions}) => {

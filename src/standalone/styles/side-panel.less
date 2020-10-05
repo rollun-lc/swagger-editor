@@ -1,0 +1,70 @@
+
+.side-panel-root {
+  position: absolute;
+  top: 100px;
+  left: 30%;
+  height: 800px;
+  width: 40%;
+  min-width: 450px;
+  z-index: 99999;
+  background: #fff;
+  border-radius: 2px;
+  display: inline-block;
+  margin: 1rem;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+
+  label {
+    font-size: 1rem;
+  }
+
+  .header {
+    text-align: center;
+  }
+
+  .d-flex {
+    display: flex;
+
+    &.column {
+      flex-direction: column;
+    }
+
+    &.between {
+      justify-content: space-between;
+    }
+
+  }
+
+  .d-block {
+    display: block;
+  }
+
+  .section {
+    margin: 15px 20px;
+  }
+
+}
+
+.button {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 5px 15px;
+  transition: all .3s;
+  border: 2px solid grey;
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+  font-family: sans-serif;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.menu-toggle-button {
+  position: absolute;
+  top: 10px;
+  right: 5px;
+  z-index: 9999;
+  color: white;
+}
+

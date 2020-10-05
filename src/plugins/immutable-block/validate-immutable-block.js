@@ -1,5 +1,5 @@
 import {hashFnv32a, immutableBlockFooter, immutableBlockHeader} from "./utils"
-import {clearErrorsByType}                                      from "../refs-util"
+import {clearErrorsByType} from "../refs-util"
 
 export const validateImmutableBlock = (spec) => (system) => {
 

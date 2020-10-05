@@ -9,13 +9,15 @@ export default class StandaloneLayout extends React.Component {
   }
 
   render() {
-    const { getComponent } = this.props
+    const {getComponent} = this.props
     const EditorLayout = getComponent("EditorLayout", true)
     const Topbar = getComponent("Topbar", true)
+    const SidePanelContainer = getComponent("SidePanelContainer", true)
 
     return (
       <div>
-        <Topbar />
+        <SidePanelContainer/>
+        <Topbar/>
         <EditorLayout/>
       </div>
     )

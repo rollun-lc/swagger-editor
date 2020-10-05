@@ -3,8 +3,9 @@ import TopbarInsertPlugin from "./topbar-insert"
 import TopbarMenuFileImportFile from "./topbar-menu-file-import_file"
 import TopbarMenuEditConvert from "./topbar-menu-edit-convert"
 import StandaloneLayout from "./standalone-layout"
+import SidePanelPlugin from "./side-panel"
 
-let StandaloneLayoutPlugin = function() {
+let StandaloneLayoutPlugin = function () {
   return {
     components: {
       StandaloneLayout
@@ -18,6 +19,7 @@ export default function () {
     TopbarInsertPlugin,
     TopbarMenuFileImportFile,
     TopbarMenuEditConvert,
-    StandaloneLayoutPlugin
+    StandaloneLayoutPlugin,
+    SidePanelPlugin
   ]
 }
