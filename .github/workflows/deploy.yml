@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Build
-        run: |
+        run:
           npm run predev
           npm run build
       - name: Test
