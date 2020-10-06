@@ -1,18 +1,21 @@
-import {ERR_TYPE} from "./index"
+import {ERR_TYPE}          from "./index"
 import {clearErrorsByType} from "../refs-util"
 
 export const validateForbiddenKeys = (spec) => ({errActions}) => {
 
-  clearErrorsByType(ERR_TYPE, errActions.clearBy)
+  clearErrorsByType(ERR_TYPE + "-forbidden-keys", errActions.clearBy)
 
   let error = null
+
+  const forbiddenKeys = ["operationId"]
 
   const lines = spec.split("\n")
   for (let i = 0, len = lines.length; i < len; i++) {
     const line = lines[i]
-    if (line.trim().indexOf("operationId") === 0) {
+    const forbiddenKey = forbiddenKeys.find(key => line.trim().indexOf(key) === 0)
+    if (forbiddenKey) {
       error = {
-        message: `${ERR_TYPE}: 'operationId' is forbidden to use!`,
+        message: `${ERR_TYPE}-forbidden-keys: '${forbiddenKey}' is forbidden to use!`,
         line: i + 1
       }
       break
@@ -39,14 +42,17 @@ export const validateTags = (JSONSpec) => ({errActions}) => {
 }
 
 
-export const validateVersion = (JSONSpec) => ({errActions}) => {
+export const validateVersion = (specStr) => (props) => {
+  const {errActions, specSelectors, fn: {AST}} = props
 
   clearErrorsByType(ERR_TYPE + "-version", errActions.clearBy)
 
-  if (JSONSpec && JSONSpec.info) {
-    if (!/^[1-9][0-9]{0,3}$/.test(JSONSpec.info.version)) {
+  const version = specSelectors.version().toString()
+  if (version) {
+    if (!/^[1-9][0-9]{0,3}$/.test(version)) {
       errActions.newThrownErr({
-        message: `${ERR_TYPE}-version: Version must be a valid integer, less than 999!`
+        message: `${ERR_TYPE}-version: Version must be a valid integer, instead got [${version}]!`,
+        line: AST.getLineNumberForPath(specStr, ["info", "version"])
       })
     }
   }
