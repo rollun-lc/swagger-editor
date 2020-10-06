@@ -5,8 +5,6 @@ export const validateForbiddenKeys = (spec) => ({errActions}) => {
 
   clearErrorsByType(ERR_TYPE + "-forbidden-keys", errActions.clearBy)
 
-  let error = null
-
   const forbiddenKeys = ["operationId"]
 
   const lines = spec.split("\n")
@@ -14,15 +12,12 @@ export const validateForbiddenKeys = (spec) => ({errActions}) => {
     const line = lines[i]
     const forbiddenKey = forbiddenKeys.find(key => line.trim().indexOf(key) === 0)
     if (forbiddenKey) {
-      error = {
+      errActions.newThrownErr({
         message: `${ERR_TYPE}-forbidden-keys: '${forbiddenKey}' is forbidden to use!`,
         line: i + 1
-      }
+      })
       break
     }
-  }
-  if (error) {
-    errActions.newThrownErr(error)
   }
 }
 

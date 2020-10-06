@@ -33,7 +33,7 @@ class SidePanelContainer extends React.Component {
     return <div className='swagger-editor-standalone'>
       {!isOpen && <button className='button menu-toggle-button'
                           onClick={() => this.togglePanel()}>
-        Open menu
+        Open github menu
       </button>}
       <SidePanel isOpen={isOpen} handleClose={() => this.togglePanel()}/>
     </div>
