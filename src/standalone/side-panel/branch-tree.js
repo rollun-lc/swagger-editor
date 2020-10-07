@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import {Octokit} from "@octokit/core"
-import {REPO_NAME, REPO_OWNER} from "./side-panel"
+import {REPO_NAME, REPO_OWNER} from "./manifests-list"
 import isJsonObject from "is-json"
 import YAML from "js-yaml"
 
@@ -12,14 +12,17 @@ export default class BranchTree extends React.Component {
     sidepanelSelectors: PropTypes.object.isRequired,
     branch: PropTypes.string.isRequired,
     specActions: PropTypes.string.isRequired,
-    specSelectors: PropTypes.object.isRequired
+    specSelectors: PropTypes.object.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    onFileDelete: PropTypes.func.isRequired
   }
 
   constructor(props) {
     super(props)
     this.state = {
       fileSHA: localStorage.getItem("LAST_EDITING_FILE_SHA"),
-      fileName: localStorage.getItem("LAST_EDITING_FILE")
+      fileName: localStorage.getItem("LAST_EDITING_FILE"),
+      searchText: ""
     }
   }
 
@@ -37,55 +40,82 @@ export default class BranchTree extends React.Component {
     this.githubOctokit.request("GET /repos/:owner/:repo/contents/:path?ref=" + branch, {
       owner: REPO_OWNER,
       repo: REPO_NAME,
-      path
+      path,
+      headers: {
+        // force disable cache
+        "If-None-Match": ""
+      }
     })
       .then(({data: {content, sha}}) => {
         this.setFile(path, sha)
         const decodedContent = atob(content)
         const preparedContent = isJsonObject(decodedContent) ? YAML.safeDump(YAML.safeLoad(decodedContent)) : decodedContent
         this.props.specActions.updateSpec(preparedContent)
+        this.props.onSelect()
       })
   }
 
-  handleFileSave(path, branch) {
+  handleFileDelete(path, branch, sha) {
     if (!path) return
-    this.githubOctokit.request("PUT /repos/:owner/:repo/contents/:path", {
+    this.githubOctokit.request("DELETE /repos/:owner/:repo/contents/:path", {
       owner: REPO_OWNER,
       repo: REPO_NAME,
       path,
-      message: prompt(`Optional: enter commit message`) || `Update ${path}`,
+      message: prompt(`Optional: enter commit message`) || `Delete ${path}`,
       branch,
-      content: btoa(this.props.specSelectors.specStr().toString()),
-      sha: this.state.fileSHA
+      sha
     })
-      .then(({data: {commit: {sha}}}) => {
-        this.setFile(path, sha)
+      .then(() => {
+        this.props.onFileDelete(path, branch)
       })
+  }
+
+  filterManifests(manifests, inputText) {
+    const trimmed = inputText.trim().toLowerCase()
+    if (!trimmed) return manifests
+    return manifests.filter(({path}) => path.toLowerCase().includes(trimmed))
   }
 
   render() {
 
     const {tree, branch} = this.props
-    const {fileName} = this.state
+    const {searchText} = this.state
+
+    const filteredFiles = this.filterManifests(tree, searchText)
 
     return <div>
-      <button className='button' onClick={() => this.handleFileSave(fileName, branch)}>
-        Save {fileName || "<select file first>"} file
-      </button>
-      {Object.entries(tree).map(([name, files]) => {
-        return <div key={name}>
-          <h2>{name}</h2>
-          <div className='section'>
-            {files.length === 0
-              ? <h4>Empty</h4>
-              : files.map(({path, sha}) => <h4 key={path}><a href="" onClick={e => {
-                e.preventDefault()
-                this.setFile(path, sha)
-                this.handleFileSelect(path, branch)
-              }}>{path.replace(name + "/", "")}</a></h4>)}
-          </div>
-        </div>
-      })}
+      <input className='search-input'
+             value={searchText}
+             onChange={e => this.setState({searchText: e.target.value})}
+             type="text"
+             placeholder='Start typing manifest name to search...'/>
+      <div className='section even-children-darker'>
+        {filteredFiles.length === 0
+          ? <h4>Empty</h4>
+          : filteredFiles.map(({path, sha}) => {
+            return <div className='d-flex between'>
+              <h3 key={path}>{path}</h3>
+              <div className='d-flex' style={{background: "transparent"}}>
+                <button style={{margin: "10px 0"}}
+                        onClick={() => {
+                          this.setFile(path, sha)
+                          this.handleFileSelect(path, branch)
+                        }}
+                        className='button'>
+                  Use
+                </button>
+                <button style={{margin: "10px 0"}}
+                        onClick={() => {
+                          this.setFile(path, sha)
+                          this.handleFileDelete(path, branch, sha)
+                        }}
+                        className='button danger'>
+                  Delete
+                </button>
+              </div>
+            </div>
+          })}
+      </div>
     </div>
   }
 }

@@ -25,5 +25,5 @@ export function hashFnv32a(str, asString, seed) {
 }
 
 export const immutableBlockHeader = "# ------------ IMMUTABLE BLOCK START, DO NOT MODIFY ------------ #"
-export const immutableBlockFooter = "# IMMUTABLE BLOCK END. checksum: "
+export const immutableBlockFooter = "# ------------ IMMUTABLE BLOCK END. checksum: "
 

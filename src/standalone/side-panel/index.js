@@ -1,7 +1,8 @@
 import React from "react"
 import PropTypes from "prop-types"
-import SidePanel from "./side-panel"
+import ManifestsList from "./manifests-list"
 import BranchTree from "./branch-tree"
+import SaveManifest from "./save-manifest"
 
 class SidePanelContainer extends React.Component {
 
@@ -14,28 +15,16 @@ class SidePanelContainer extends React.Component {
     getComponent: PropTypes.func.isRequired,
   }
 
-  togglePanel() {
-    this.setState(({isOpen}) => ({isOpen: !isOpen}))
-  }
-
-
   render() {
     const {getComponent} = this.props
-    const {isOpen} = this.state
 
-    const SidePanel = getComponent("SidePanel", true)
-
-    if (isOpen) {
-      // render btn
-    }
+    const ManifestsList = getComponent("ManifestsList", true)
+    const SaveManifest = getComponent("SaveManifest", true)
 
     // swagger-editor-standalone class is required to other less classes work
     return <div className='swagger-editor-standalone'>
-      {!isOpen && <button className='button menu-toggle-button'
-                          onClick={() => this.togglePanel()}>
-        Open github menu
-      </button>}
-      <SidePanel isOpen={isOpen} handleClose={() => this.togglePanel()}/>
+      <ManifestsList/>
+      <SaveManifest/>
     </div>
   }
 }
@@ -56,8 +45,9 @@ export default function SidePanelPlugin() {
     },
     components: {
       SidePanelContainer,
-      SidePanel,
-      BranchTree
+      ManifestsList,
+      BranchTree,
+      SaveManifest
     }
   }
 }
