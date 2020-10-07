@@ -1,9 +1,9 @@
-import React from "react"
-import PropTypes from "prop-types"
-import {Octokit} from "@octokit/core"
+import React                   from "react"
+import PropTypes               from "prop-types"
+import {Octokit}               from "@octokit/core"
 import {REPO_NAME, REPO_OWNER} from "./manifests-list"
-import isJsonObject from "is-json"
-import YAML from "js-yaml"
+import isJsonObject            from "is-json"
+import YAML                    from "js-yaml"
 
 export default class BranchTree extends React.Component {
 
@@ -71,6 +71,7 @@ export default class BranchTree extends React.Component {
   }
 
   filterManifests(manifests, inputText) {
+    if (!manifests || manifests.length === 0) return []
     const trimmed = inputText.trim().toLowerCase()
     if (!trimmed) return manifests
     return manifests.filter(({path}) => path.toLowerCase().includes(trimmed))
@@ -106,8 +107,13 @@ export default class BranchTree extends React.Component {
                 </button>
                 <button style={{margin: "10px 0"}}
                         onClick={() => {
-                          this.setFile(path, sha)
-                          this.handleFileDelete(path, branch, sha)
+                          if (confirm(`
+     Are You sure, You want to delete manifest?
+     You will be able to restore deleted file, via git later
+                            `)) {
+                            this.setFile(path, sha)
+                            this.handleFileDelete(path, branch, sha)
+                          }
                         }}
                         className='button danger'>
                   Delete

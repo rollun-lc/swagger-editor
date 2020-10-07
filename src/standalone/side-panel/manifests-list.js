@@ -1,7 +1,7 @@
-import React from "react"
+import React     from "react"
 import PropTypes from "prop-types"
 import {Octokit} from "@octokit/core"
-import _ from "lodash"
+import _         from "lodash"
 
 export const REPO_OWNER = "rollun-com"
 export const REPO_NAME = "openapi-manifests"
@@ -125,7 +125,7 @@ export default class ManifestsList extends React.Component {
 
     return <div className='manifests-modal'>
       <section className='d-flex between section'>
-        <h1 className='header'>Rollun OpenAPI Manifests</h1>
+        <h1 className='header'>Rollun OpenAPI Manifests from <a href="https://github.com/rollun-com/openapi-manifests" target='_blank'>git repo</a></h1>
         <button className='button'
                 style={{margin: "10px"}}
                 onClick={() => this.togglePanel()}>
@@ -144,14 +144,14 @@ export default class ManifestsList extends React.Component {
         <button className='button'
                 style={{margin: "10px"}}
                 onClick={() => this.fetchBranches().then(branches => this.setBranches(branches))}>
-          Force refetch manifests
+          Refresh manifests cache
         </button>
       </section>
       <section className='section'>
-        {branches[currentBranch] && <BranchTree tree={branches[currentBranch]}
-                                                onFileDelete={(file, branch) => this.handleFileDelete(file, branch)}
-                                                onSelect={() => this.togglePanel()}
-                                                branch={currentBranch}/>}
+        <BranchTree tree={branches[currentBranch]}
+                    onFileDelete={(file, branch) => this.handleFileDelete(file, branch)}
+                    onSelect={() => this.togglePanel()}
+                    branch={currentBranch}/>
       </section>
     </div>
   }

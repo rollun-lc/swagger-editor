@@ -1,8 +1,8 @@
-import React from "react"
-import PropTypes from "prop-types"
-import _ from "lodash"
+import React                   from "react"
+import PropTypes               from "prop-types"
+import _                       from "lodash"
 import {REPO_NAME, REPO_OWNER} from "./manifests-list"
-import {Octokit} from "@octokit/core"
+import {Octokit}               from "@octokit/core"
 
 export default class SaveManifest extends React.Component {
 
@@ -28,13 +28,17 @@ export default class SaveManifest extends React.Component {
   }
 
   getFileNameFromTitle(title, version) {
-    return `${_.snakeCase(title)}_v${version}.yml`
+    return `${_.snakeCase(title)}__v${version}.yml`
   }
 
   async handleFormSubmit(e, fileName) {
     e.preventDefault()
     const form = new FormData(e.target)
-    const branch = form.get("save-mode") === "production" ? "master" : "develop"
+    const saveMode = form.get("save-mode")
+    if (saveMode === "-") {
+      return alert(`Select save mode first!`)
+    }
+    const branch = saveMode === "production" ? "master" : "develop"
 
     const {data} = await this.githubOctokit.request("GET /repos/:owner/:repo/contents/:path?ref=" + branch, {
       owner: REPO_OWNER,
@@ -80,7 +84,7 @@ export default class SaveManifest extends React.Component {
     const fileName = this.getFileNameFromTitle(title, version)
     return <div className='manifests-modal small-modal'>
       <section className='d-flex between section'>
-        <h1 className='header'>Save OpenAPI Manifest</h1>
+        <h1 className='header'>Save OpenAPI Manifest to <a href="https://github.com/rollun-com/openapi-manifests" target='_blank'>git repo</a></h1>
         <button className='button'
                 style={{margin: "10px"}}
                 onClick={() => this.togglePanel()}>
@@ -89,11 +93,12 @@ export default class SaveManifest extends React.Component {
       </section>
       <section className='section'>
         {title && version
-          ? <h3>Current manifest name: {fileName}</h3>
+          ? <div><h2>Current manifest name (generated from info.title):</h2><h2>{fileName}</h2></div>
           : <h2 style={{color: "red"}}>Title and version field is required.</h2>}
         <form style={{fontSize: "1rem"}} onSubmit={e => this.handleFormSubmit(e, fileName)}>
           Save current manifest as
           <select name='save-mode' style={{margin: "0 10px"}}>
+            <option value="-">--- Select mode ---</option>
             <option value="production">Production ready</option>
             <option value="draft">Draft</option>
           </select>
