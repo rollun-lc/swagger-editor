@@ -1,9 +1,9 @@
-import React                   from "react"
-import PropTypes               from "prop-types"
-import {Octokit}               from "@octokit/core"
+import React from "react"
+import PropTypes from "prop-types"
+import {Octokit} from "@octokit/core"
 import {REPO_NAME, REPO_OWNER} from "./manifests-list"
-import isJsonObject            from "is-json"
-import YAML                    from "js-yaml"
+import isJsonObject from "is-json"
+import YAML from "js-yaml"
 
 export default class BranchTree extends React.Component {
 

@@ -1,10 +1,20 @@
-import React                   from "react"
-import PropTypes               from "prop-types"
-import _                       from "lodash"
+import React from "react"
+import PropTypes from "prop-types"
+import _ from "lodash"
 import {REPO_NAME, REPO_OWNER} from "./manifests-list"
-import {Octokit}               from "@octokit/core"
+import {Octokit} from "@octokit/core"
+import {HelpButton} from "./help-button"
+import {CloseButton} from "./close-button"
 
 export default class SaveManifest extends React.Component {
+
+  static propTypes = {
+    sidepanelActions: PropTypes.object.isRequired,
+    sidepanelSelectors: PropTypes.object.isRequired,
+    specActions: PropTypes.object.isRequired,
+    getComponent: PropTypes.func.isRequired,
+    specSelectors: PropTypes.object.isRequired
+  }
 
   state = {
     isOpen: false
@@ -14,12 +24,6 @@ export default class SaveManifest extends React.Component {
     this.setState(({isOpen}) => ({isOpen: !isOpen}))
   }
 
-  static propTypes = {
-    sidepanelSelectors: PropTypes.object.isRequired,
-    specActions: PropTypes.object.isRequired,
-    getComponent: PropTypes.func.isRequired,
-    specSelectors: PropTypes.object.isRequired
-  }
 
   componentDidMount() {
     this.githubOctokit = new Octokit({
@@ -63,8 +67,13 @@ export default class SaveManifest extends React.Component {
     this.togglePanel()
   }
 
-  saveManifest() {
-
+  handleResetToken() {
+    const token = prompt("Enter Your github token")
+    localStorage.setItem("GITHUB_AUTH_TOKEN", token)
+    this.props.sidepanelActions.setGithubAuthToken(token)
+    this.githubOctokit = new Octokit({
+      auth: token
+    })
   }
 
   render() {
@@ -82,14 +91,16 @@ export default class SaveManifest extends React.Component {
     const {title = "", version = ""} = this.props.specSelectors.info().toJS()
 
     const fileName = this.getFileNameFromTitle(title, version)
+
+    const token = this.props.sidepanelSelectors.getGithubAuthToken()
+    const isGitHubTokenSet = token && token.trim() && token !== "null"
     return <div className='manifests-modal small-modal'>
       <section className='d-flex between section'>
-        <h1 className='header'>Save OpenAPI Manifest to <a href="https://github.com/rollun-com/openapi-manifests" target='_blank'>git repo</a></h1>
-        <button className='button'
-                style={{margin: "10px"}}
-                onClick={() => this.togglePanel()}>
-          Close
-        </button>
+        <h1 className='header'>Save OpenAPI Manifest</h1>
+        <div className='d-flex '>
+          <CloseButton onClose={() => this.togglePanel()}/>
+          <HelpButton/>
+        </div>
       </section>
       <section className='section'>
         {title && version
@@ -102,11 +113,19 @@ export default class SaveManifest extends React.Component {
             <option value="production">Production ready</option>
             <option value="draft">Draft</option>
           </select>
-          <section>
+          {!isGitHubTokenSet && <h4 className='text-danger'>Github Token is not set, set it with button below.</h4>}
+          <section className='d-flex between'>
             <button style={{marginTop: 10}}
                     type='submit'
+                    disabled={!isGitHubTokenSet}
                     className='button'>
               Save
+            </button>
+            <button className='button'
+                    style={{marginTop: 10}}
+                    type='button'
+                    onClick={() => this.handleResetToken()}>
+              Reset github token
             </button>
           </section>
         </form>

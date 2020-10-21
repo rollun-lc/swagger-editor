@@ -1,7 +1,9 @@
-import React     from "react"
+import React from "react"
 import PropTypes from "prop-types"
 import {Octokit} from "@octokit/core"
-import _         from "lodash"
+import _ from "lodash"
+import {CloseButton} from "./close-button"
+import {HelpButton} from "./help-button"
 
 export const REPO_OWNER = "rollun-com"
 export const REPO_NAME = "openapi-manifests"
@@ -125,12 +127,11 @@ export default class ManifestsList extends React.Component {
 
     return <div className='manifests-modal'>
       <section className='d-flex between section'>
-        <h1 className='header'>Rollun OpenAPI Manifests from <a href="https://github.com/rollun-com/openapi-manifests" target='_blank'>git repo</a></h1>
-        <button className='button'
-                style={{margin: "10px"}}
-                onClick={() => this.togglePanel()}>
-          Close
-        </button>
+        <h1 className='header'>Rollun OpenAPI Manifests</h1>
+        <div className='d-flex '>
+          <CloseButton onClose={() => this.togglePanel()}/>
+          <HelpButton/>
+        </div>
       </section>
       <section className='section d-flex between'>
         <label htmlFor="select-branch" className='d-flex column'>
