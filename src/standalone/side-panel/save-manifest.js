@@ -55,13 +55,24 @@ export default class SaveManifest extends React.Component {
     })
       .catch(() => ({data: null}))
 
+    let encoded
+    try {
+      encoded = btoa(this.props.specSelectors.specStr().toString())
+    } catch (e) {
+      alert(`
+        Error while encoding manifest:
+        ${e.message}
+      `)
+      return
+    }
+
     await this.githubOctokit.request("PUT /repos/:owner/:repo/contents/:path", {
       owner: REPO_OWNER,
       repo: REPO_NAME,
       path: fileName,
       message: prompt(`Optional: enter commit message`) || `Update ${fileName}`,
       branch,
-      content: btoa(this.props.specSelectors.specStr().toString()),
+      content: encoded,
       ...(data && {sha: data.sha})
     })
     this.togglePanel()
