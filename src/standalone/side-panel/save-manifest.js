@@ -66,7 +66,6 @@ export default class SaveManifest extends React.Component {
       return
     }
 
-
     await this.githubOctokit.request("PUT /repos/:owner/:repo/contents/:path", {
       owner: REPO_OWNER,
       repo: REPO_NAME,
