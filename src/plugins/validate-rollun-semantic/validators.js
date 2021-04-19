@@ -104,7 +104,7 @@ export const validateServers = (JSONSpec) => ({errActions, specSelectors, fn: {A
     })
   }
 
-  const regex = new RegExp(`^https?://[a-z][a-z0-9]{0,14}/openapi/${JSONSpec.info.title || "EmptyTitle"}/v${JSONSpec.info.version}$`)
+  const regex = new RegExp(`^https?://[a-z][a-z0-9-]{0,14}/openapi/${JSONSpec.info.title || "EmptyTitle"}/v${JSONSpec.info.version}$`)
   const invalidTagIndex = JSONSpec.servers.findIndex(({url}) => {
     return !regex.test(url)
   })
