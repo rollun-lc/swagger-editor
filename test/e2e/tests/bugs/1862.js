@@ -58,6 +58,7 @@ describe("Editor #1862: codegen download links downgrade HTTPS", () => {
     })
 
     it("should force HTTPS client downloads from Swagger.io Generator", () => {
+      cy.viewport("macbook-15")
       let wasHttpHit = false
       let wasHttpsHit = false
 

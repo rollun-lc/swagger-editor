@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 import ManifestsList from "./manifests-list"
 import BranchTree from "./branch-tree"
 import SaveManifest from "./save-manifest"
+import DefaultManifestButton from "./open-default-manifest"
 
 class SidePanelContainer extends React.Component {
 
@@ -20,9 +21,11 @@ class SidePanelContainer extends React.Component {
 
     const ManifestsList = getComponent("ManifestsList", true)
     const SaveManifest = getComponent("SaveManifest", true)
+    const DefaultManifestButton = getComponent("DefaultManifestButton", true)
 
     // swagger-editor-standalone class is required to other less classes work
     return <div className='swagger-editor-standalone'>
+      <DefaultManifestButton/>
       <ManifestsList/>
       <SaveManifest/>
     </div>
@@ -47,7 +50,8 @@ export default function SidePanelPlugin() {
       SidePanelContainer,
       ManifestsList,
       BranchTree,
-      SaveManifest
+      SaveManifest,
+      DefaultManifestButton
     }
   }
 }
