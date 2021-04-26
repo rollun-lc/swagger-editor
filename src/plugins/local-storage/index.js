@@ -1,4 +1,4 @@
-import PetstoreYaml from "./petstore"
+import DefaultYaml from "./petstore"
 const CONTENT_KEY = "swagger-editor-content"
 
 let localStorage = window.localStorage
@@ -23,10 +23,10 @@ export default function(system) {
         saveContentToStorage(yaml)
         localStorage.setItem("ngStorage-SwaggerEditorCache", null)
       } catch(e) {
-        system.specActions.updateSpec(PetstoreYaml)
+        system.specActions.updateSpec(DefaultYaml)
       }
     } else {
-      system.specActions.updateSpec(PetstoreYaml)
+      system.specActions.updateSpec(DefaultYaml)
     }
   }, 0)
   return {
