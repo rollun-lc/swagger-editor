@@ -90,10 +90,10 @@ export default class BranchTree extends React.Component {
              onChange={e => this.setState({searchText: e.target.value})}
              type="text"
              placeholder='Start typing manifest name to search...'/>
-      <div className='section even-children-darker'>
+      <div className='section even-children-darker' style={{ maxHeight: 550, overflowY: "scroll" }}>
         {filteredFiles.length === 0
           ? <h4>Empty</h4>
-          : filteredFiles.map(({path, sha}) => {
+          : [...filteredFiles, ...filteredFiles].map(({path, sha}) => {
             return <div className='d-flex between'>
               <h3 key={path}>{path}</h3>
               <div className='d-flex' style={{background: "transparent"}}>
