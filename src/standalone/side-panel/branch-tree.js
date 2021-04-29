@@ -93,7 +93,7 @@ export default class BranchTree extends React.Component {
       <div className='section even-children-darker' style={{ maxHeight: 550, overflowY: "scroll" }}>
         {filteredFiles.length === 0
           ? <h4>Empty</h4>
-          : [...filteredFiles, ...filteredFiles].map(({path, sha}) => {
+          : filteredFiles.map(({path, sha}) => {
             return <div className='d-flex between'>
               <h3 key={path}>{path}</h3>
               <div className='d-flex' style={{background: "transparent"}}>
