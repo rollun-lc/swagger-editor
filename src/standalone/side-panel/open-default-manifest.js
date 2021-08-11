@@ -1,4 +1,4 @@
-import React       from "react"
+import React from "react"
 import DefaultYaml from "../../plugins/local-storage/petstore"
 import PropTypes from "prop-types"
 
