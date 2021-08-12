@@ -1,8 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
 import SplitPane from "react-split-pane"
-import qs from "qs"
-import { copyToClipboard } from "rollun-ts-utils"
 
 const MODE_KEY = ["split-pane-mode"]
 const MODE_LEFT = "left"
@@ -24,13 +22,6 @@ export default class SplitPaneMode extends React.Component {
     threshold: 100, // in pixels
     children: [],
   };
-
-  state = {
-    buttonHovered: false,
-    buttonActive: false,
-    copied: false,
-    copiedTimestamp: Date.now()
-  }
 
   initializeComponent = (c) => {
     this.splitPane = c
@@ -66,21 +57,18 @@ export default class SplitPaneMode extends React.Component {
 
   render() {
     let { children, layoutSelectors } = this.props
-    const [, queryParams] = window.location.href.split("?")
-    const params = qs.parse(queryParams)
-    const previewSize = params.hideEditor === "true" ? "100%" : "50%"
 
     const mode = layoutSelectors.whatMode(MODE_KEY)
     const left = mode === MODE_RIGHT ? <noscript/> : children[0]
     const right = mode === MODE_LEFT ? <noscript/> : children[1]
-    const size = this.sizeFromMode(mode, previewSize)
+    const size = this.sizeFromMode(mode, "50%")
 
     return (
       <SplitPane
         disabledClass={""}
         ref={this.initializeComponent}
         split='vertical'
-        defaultSize={previewSize}
+        defaultSize={"50%"}
         primary="second"
         minSize={0}
         size={size}
@@ -89,42 +77,7 @@ export default class SplitPaneMode extends React.Component {
         resizerStyle={{"flex": "0 0 auto", "position": "relative", "background": "#000", "opacity": ".2", "width": "11px", "cursor": "col-resize"}}
       >
         { left }
-        <div>
-          <button
-            onClick={() => {
-              copyToClipboard(params.url)
-              if (this.state.copiedTimestamp + 2000 < Date.now()) {
-                this.setState({ copied: true, copiedTimestamp: Date.now() })
-                setTimeout(() => this.setState({ copied: false }), 2000)
-              }
-            }}
-            onMouseEnter={() => this.setState({ buttonHovered: true })}
-            onMouseLeave={() => this.setState({ buttonHovered: false })}
-            onMouseDown={() => this.setState({ buttonActive: true })}
-            onMouseUp={() => this.setState({ buttonActive: false })}
-            style={{
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: 5,
-              margin: "10px 0 0 10px",
-              backgroundColor: "black",
-              color: "white",
-              width: 200,
-              ...(this.state.buttonHovered ? {
-                transform: "translate(5px, -5px)",
-                boxShadow: "-5px 5px 5px #ffea00",
-                animation: "transform 1s ease-in",
-              } : {}),
-              ...(this.state.buttonActive ? {
-                transform: "translate(2px, -2px)",
-                boxShadow: "-2px 2px 5px #ffea00",
-                opacity: 0.8,
-                animation: "opacity 1s ease-in",
-              } : {})
-          }}>Copy manifest link</button>
-          {this.state.copied && <div>Copied</div>}
-          { right }
-        </div>
+        { right }
       </SplitPane>
     )
   }

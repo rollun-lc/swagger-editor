@@ -4,7 +4,6 @@ import {Octokit} from "@octokit/core"
 import {REPO_NAME, REPO_OWNER} from "./manifests-list"
 import isJsonObject from "is-json"
 import YAML from "js-yaml"
-import qs from "qs"
 
 export default class BranchTree extends React.Component {
 
@@ -47,13 +46,7 @@ export default class BranchTree extends React.Component {
         "If-None-Match": ""
       }
     })
-      .then(({data: {content, sha, download_url}}) => {
-        const params = qs.parse(window.location.href.split("?")[1])
-
-        window.location.search = `?${qs.stringify({
-          ...params,
-          url: download_url
-        })}`
+      .then(({data: {content, sha}}) => {
         this.setFile(path, sha)
         const decodedContent = atob(content)
         const preparedContent = isJsonObject(decodedContent) ? YAML.safeDump(YAML.safeLoad(decodedContent)) : decodedContent
