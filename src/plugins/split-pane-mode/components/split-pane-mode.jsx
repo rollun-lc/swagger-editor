@@ -28,8 +28,7 @@ export default class SplitPaneMode extends React.Component {
   state = {
     buttonHovered: false,
     buttonActive: false,
-    copied: false,
-    copiedTimestamp: Date.now()
+    copiedTimestamp: Date.now(),
   }
 
   initializeComponent = (c) => {
@@ -64,11 +63,54 @@ export default class SplitPaneMode extends React.Component {
     return this.draggedSize || defaultSize
   }
 
+  addCopyButtonToLink(hgroup, params) {
+    const button = document.createElement("button")
+    const copyImage = document.createElement("img")
+
+    button.id = "copy-link"
+    button.style.borderRadius = "99999px"
+    button.style.backgroundColor = "white"
+    button.style.border = "none"
+    button.style.color = "white"
+    button.style.width = "30px"
+    button.style.height = "30px"
+
+    button.onclick = (e) => {
+      copyToClipboard(params.url)
+      const copiedTimestamp = Date.now()
+
+      this.setState({ copiedTimestamp })
+
+      if (this.state.copiedTimestamp + 2000 > copiedTimestamp) {
+        const copiedText = document.querySelector("#copied-text") || document.createElement("h2")
+        copiedText.innerText = "Copied"
+        copiedText.id = "copied-text"
+
+        e.srcElement.parentNode.parentNode.appendChild(copiedText)
+        setTimeout(() => {
+          document.querySelector("#copied-text")?.remove()
+          this.setState({ copiedTimestamp: 0 })
+        }, 2000)
+      }
+    }
+
+    copyImage.src = "https://img.icons8.com/ios-glyphs/30/000000/copy.png"
+
+    button.appendChild(copyImage)
+    hgroup.appendChild(button)
+  }
+
   render() {
     let { children, layoutSelectors } = this.props
     const [, queryParams] = window.location.href.split("?")
     const params = qs.parse(queryParams)
     const previewSize = params.hideEditor === "true" ? "100%" : "50%"
+    const copyButton = document.querySelector("#copy-link")
+    const hgroup = document.querySelector("hgroup")
+
+    if (!copyButton && hgroup) {
+      this.addCopyButtonToLink(hgroup, params)
+    }
 
     const mode = layoutSelectors.whatMode(MODE_KEY)
     const left = mode === MODE_RIGHT ? <noscript/> : children[0]
@@ -89,42 +131,7 @@ export default class SplitPaneMode extends React.Component {
         resizerStyle={{"flex": "0 0 auto", "position": "relative", "background": "#000", "opacity": ".2", "width": "11px", "cursor": "col-resize"}}
       >
         { left }
-        <div>
-          <button
-            onClick={() => {
-              copyToClipboard(params.url)
-              if (this.state.copiedTimestamp + 2000 < Date.now()) {
-                this.setState({ copied: true, copiedTimestamp: Date.now() })
-                setTimeout(() => this.setState({ copied: false }), 2000)
-              }
-            }}
-            onMouseEnter={() => this.setState({ buttonHovered: true })}
-            onMouseLeave={() => this.setState({ buttonHovered: false })}
-            onMouseDown={() => this.setState({ buttonActive: true })}
-            onMouseUp={() => this.setState({ buttonActive: false })}
-            style={{
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: 5,
-              margin: "10px 0 0 10px",
-              backgroundColor: "black",
-              color: "white",
-              width: 200,
-              ...(this.state.buttonHovered ? {
-                transform: "translate(5px, -5px)",
-                boxShadow: "-5px 5px 5px #ffea00",
-                animation: "transform 1s ease-in",
-              } : {}),
-              ...(this.state.buttonActive ? {
-                transform: "translate(2px, -2px)",
-                boxShadow: "-2px 2px 5px #ffea00",
-                opacity: 0.8,
-                animation: "opacity 1s ease-in",
-              } : {})
-          }}>Copy manifest link</button>
-          {this.state.copied && <div>Copied</div>}
-          { right }
-        </div>
+        { right }
       </SplitPane>
     )
   }

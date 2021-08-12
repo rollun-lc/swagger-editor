@@ -54,6 +54,7 @@ export default class BranchTree extends React.Component {
           ...params,
           url: download_url
         })}`
+        localStorage.setItem("LAST_EDITING_FILE_DOWNLOAD_URL", download_url)
         this.setFile(path, sha)
         const decodedContent = atob(content)
         const preparedContent = isJsonObject(decodedContent) ? YAML.safeDump(YAML.safeLoad(decodedContent)) : decodedContent
