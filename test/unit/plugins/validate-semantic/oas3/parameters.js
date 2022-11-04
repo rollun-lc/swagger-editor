@@ -4,35 +4,6 @@ import validateHelper, { expectNoErrorsOrWarnings } from '../validate-helper.js'
 describe('validation plugin - semantic - oas3 parameters', () => {
   describe('Header parameters should not be named Authorization, Content-Type, or Accept', () => {
     it(
-      'should return a warning when a header parameter named Authorization is defined in an operation',
-      () => {
-        const spec = {
-          openapi: '3.0.0',
-          paths: {
-            '/': {
-              get: {
-                parameters: [
-                  {
-                    in: 'header',
-                    name: 'authorization'
-                  }
-                ]
-              }
-            }
-          }
-        };
-
-        return validateHelper(spec)
-          .then(system => {
-            const allErrors = system.errSelectors.allErrors().toJS();
-            const firstError = allErrors[0];
-            expect(allErrors.length).toEqual(1);
-            expect(firstError.message).toMatch('Header parameters named "Authorization" are ignored.');
-            expect(firstError.path).toEqual(['paths', '/', 'get', 'parameters', '0', 'name']);
-          });
-      }
-    );
-    it(
       'should return a warning when a header parameter named Content-Type is defined in an operation',
       () => {
         const spec = {
