@@ -24,7 +24,6 @@ export default class SaveManifest extends React.Component {
     this.setState(({isOpen}) => ({isOpen: !isOpen}))
   }
 
-
   componentDidMount() {
     this.githubOctokit = new Octokit({
       auth: this.props.sidepanelSelectors.getGithubAuthToken()
@@ -78,15 +77,6 @@ export default class SaveManifest extends React.Component {
     this.togglePanel()
   }
 
-  handleResetToken() {
-    const token = prompt("Enter Your github token")
-    localStorage.setItem("GITHUB_AUTH_TOKEN", token)
-    this.props.sidepanelActions.setGithubAuthToken(token)
-    this.githubOctokit = new Octokit({
-      auth: token
-    })
-  }
-
   render() {
     // const {getComponent} = this.props
     const {isOpen} = this.state
@@ -124,19 +114,13 @@ export default class SaveManifest extends React.Component {
             <option value="production">Production ready</option>
             <option value="draft">Draft</option>
           </select>
-          {!isGitHubTokenSet && <h4 className='text-danger'>Github Token is not set, set it with button below.</h4>}
+          {!isGitHubTokenSet && <h4 className='text-danger'>Github Token is not set, set it with 'Reset github token' button</h4>}
           <section className='d-flex between'>
             <button style={{marginTop: 10}}
                     type='submit'
                     disabled={!isGitHubTokenSet}
                     className='button'>
               Save
-            </button>
-            <button className='button'
-                    style={{marginTop: 10}}
-                    type='button'
-                    onClick={() => this.handleResetToken()}>
-              Reset github token
             </button>
           </section>
         </form>

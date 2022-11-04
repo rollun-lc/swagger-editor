@@ -4,6 +4,7 @@ import ManifestsList from "./manifests-list"
 import BranchTree from "./branch-tree"
 import SaveManifest from "./save-manifest"
 import DefaultManifestButton from "./open-default-manifest"
+import ResetGithubToken from "./github-token-setter"
 
 class SidePanelContainer extends React.Component {
 
@@ -22,9 +23,11 @@ class SidePanelContainer extends React.Component {
     const ManifestsList = getComponent("ManifestsList", true)
     const SaveManifest = getComponent("SaveManifest", true)
     const DefaultManifestButton = getComponent("DefaultManifestButton", true)
+    const ResetGithubToken = getComponent("ResetGithubToken", true)
 
     // swagger-editor-standalone class is required to other less classes work
     return <div className='swagger-editor-standalone'>
+      <ResetGithubToken/>
       <DefaultManifestButton/>
       <ManifestsList/>
       <SaveManifest/>
@@ -51,7 +54,8 @@ export default function SidePanelPlugin() {
       ManifestsList,
       BranchTree,
       SaveManifest,
-      DefaultManifestButton
+      DefaultManifestButton,
+      ResetGithubToken
     }
   }
 }
