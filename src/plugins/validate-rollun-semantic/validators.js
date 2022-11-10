@@ -6,7 +6,7 @@ export const validateForbiddenKeys = (spec) => ({errActions}) => {
 
   clearErrorsByType(ROLLUN_SEMANTIC_ERROR_PREFIX + "-forbidden-keys", errActions.clearBy)
 
-  const forbiddenKeys = ["operationId"]
+  const forbiddenKeys = []
 
   const lines = spec.split("\n")
   for (let i = 0, len = lines.length; i < len; i++) {
@@ -104,7 +104,7 @@ export const validateServers = (JSONSpec) => ({errActions, specSelectors, fn: {A
     })
   }
 
-  const regex = new RegExp(`^https?://[a-z][a-z0-9-]{0,14}/openapi/${JSONSpec.info.title || "EmptyTitle"}/v${JSONSpec.info.version}$`)
+  const regex = new RegExp(`^https?://[a-z][a-z0-9-]{0,20}/openapi/${JSONSpec.info.title || "EmptyTitle"}/v${JSONSpec.info.version}$`)
   const invalidTagIndex = JSONSpec.servers.findIndex(({url}) => {
     return !regex.test(url)
   })
