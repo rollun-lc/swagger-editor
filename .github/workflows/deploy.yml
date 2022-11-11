@@ -33,5 +33,8 @@ jobs:
         run: docker build -f Dockerfile -t docker.pkg.github.com/rollun-com/swagger-editor/swagger-editor:latest .
       - name: Push
         run: docker push docker.pkg.github.com/rollun-com/swagger-editor/swagger-editor:latest
-      - name: Deploy D2C
-        run: wget ${{ secrets.D2C_DEPLOY_WEBHOOK }}
+      - uses: rollun-com/actions/update-d2c-service@master
+        with:
+          service-name: swagger-editor2
+          d2c-email: ${{ secrets.D2C_USER }}
+          d2c-password: ${{ secrets.D2C_PASSWORD }}
