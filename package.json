@@ -92,7 +92,7 @@
     "reselect": "^4.0.0",
     "rollun-ts-utils": "0.0.2",
     "swagger-client": "^3.10.12",
-    "swagger-ui": "^3.38",
+    "swagger-ui": "^3.32.5",
     "traverse": "^0.6.6",
     "whatwg-fetch": "^2.0.3",
     "yaml-js": "^0.2.3"
