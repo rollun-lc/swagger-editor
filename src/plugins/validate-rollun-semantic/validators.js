@@ -49,7 +49,7 @@ const findInvalidTag = JSONSpec => {
 export const validateTags = (JSONSpec) => ({errActions, specSelectors, fn: {AST}}) => {
 
   clearErrorsByType(ROLLUN_SEMANTIC_ERROR_PREFIX + "-tags", errActions.clearBy)
-  
+
   const {tag, path} = findInvalidTag(JSONSpec)
 
   if (tag) {
@@ -61,17 +61,22 @@ export const validateTags = (JSONSpec) => ({errActions, specSelectors, fn: {AST}
   }
 
   for(const path in JSONSpec.paths) {
-    const pathClear = path.slice(1).split("/")[0]
+    const pathClear = path.slice(1).split("/")[0].replace(/-/g, "").toLowerCase()
 
     for(const parametr in JSONSpec.paths[path]) {
-      if(JSONSpec.paths[path][parametr].tags[0].toLowerCase().replace(/-/g, "") !== pathClear.toLowerCase()) {
-        const specStr = specSelectors.specStr()
+      const pathObj = JSONSpec.paths[path][parametr]
+      const specStr = specSelectors.specStr()
+      const tags = pathObj.tags
 
-        errActions.newThrownErr({
-          message: `${ROLLUN_SEMANTIC_ERROR_PREFIX}-tags: ${JSONSpec.paths[path][parametr].tags[0]} must same as ${pathClear.toLowerCase()}'!`,
-          line: AST.getLineNumberForPath(specStr, ["paths", path, parametr, "tags", 0])
-        })
+      for(let i = 0; i < tags.length; i++) {
+        if(tags[i].toLowerCase() !== pathClear) {
+          errActions.newThrownErr({
+            message: `${ROLLUN_SEMANTIC_ERROR_PREFIX}-tags: ${tags[i]} must be same as ${pathClear}'!`,
+            line: AST.getLineNumberForPath(specStr, ["paths", path, parametr, "tags", i])
+          })
+        }
       }
+      
     }
   }
 }
