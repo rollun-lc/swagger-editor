@@ -1,6 +1,6 @@
 import {ROLLUN_SEMANTIC_ERROR_PREFIX} from "./index"
-import {clearErrorsByType}            from "../refs-util"
-import {isPascalCase}                 from "./util"
+import {clearErrorsByType} from "../refs-util"
+import {isPascalCase} from "./util"
 
 export const validateForbiddenKeys = (spec) => ({errActions}) => {
 
@@ -49,7 +49,7 @@ const findInvalidTag = JSONSpec => {
 export const validateTags = (JSONSpec) => ({errActions, specSelectors, fn: {AST}}) => {
 
   clearErrorsByType(ROLLUN_SEMANTIC_ERROR_PREFIX + "-tags", errActions.clearBy)
-
+  
   const {tag, path} = findInvalidTag(JSONSpec)
 
   if (tag) {
@@ -58,6 +58,21 @@ export const validateTags = (JSONSpec) => ({errActions, specSelectors, fn: {AST}
       message: `${ROLLUN_SEMANTIC_ERROR_PREFIX}-tags: tag [${tag}] must be in 'PascalCase'!`,
       line: AST.getLineNumberForPath(specStr, path)
     })
+  }
+
+  for(const path in JSONSpec.paths) {
+    const pathClear = path.slice(1).split("/")[0]
+
+    for(const parametr in JSONSpec.paths[path]) {
+      if(JSONSpec.paths[path][parametr].tags[0].toLowerCase().replace(/-/g, "") !== pathClear.toLowerCase()) {
+        const specStr = specSelectors.specStr()
+
+        errActions.newThrownErr({
+          message: `${ROLLUN_SEMANTIC_ERROR_PREFIX}-tags: ${JSONSpec.paths[path][parametr].tags[0]} must same as ${pathClear.toLowerCase()}'!`,
+          line: AST.getLineNumberForPath(specStr, ["paths", path, parametr, "tags", 0])
+        })
+      }
+    }
   }
 }
 
