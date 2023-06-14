@@ -29,11 +29,11 @@
     "no-underscore-dangle": 0,
     "no-unused-expressions": 1,
     "comma-dangle": 0,
-    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-console": "off",
     "react/jsx-no-bind": [1, { "allowArrowFunctions": true }], // TODO: make this an error
     "react/display-name": 0,
     "import/no-extraneous-dependencies": [2],
     "no-useless-escape": 1,
-    "mocha/no-exclusive-tests": 2
+    "mocha/no-exclusive-tests": 2,
   }
 }

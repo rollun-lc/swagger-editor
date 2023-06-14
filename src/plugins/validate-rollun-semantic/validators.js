@@ -60,14 +60,16 @@ export const validateTags = (JSONSpec) => ({errActions, specSelectors, fn: {AST}
     })
   }
 
+  console.log("JSONSpec", JSONSpec)
+
   for(const path in JSONSpec.paths) {
     const pathClear = path.slice(1).split("/")[0].replace(/-/g, "").toLowerCase()
 
     for(const parametr in JSONSpec.paths[path]) {
-      const pathObj = JSONSpec.paths[path][parametr]
       const specStr = specSelectors.specStr()
-      const tags = pathObj.tags
-
+      const tags = JSONSpec.paths[path][parametr].tags
+      console.log("tags", tags)
+      console.log("pathClear", pathClear)
       for(let i = 0; i < tags.length; i++) {
         if(tags[i].toLowerCase() !== pathClear) {
           errActions.newThrownErr({
