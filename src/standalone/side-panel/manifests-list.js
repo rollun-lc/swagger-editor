@@ -59,7 +59,7 @@ export default class ManifestsList extends React.Component {
       }
     })
 
-    const filterFiles = (tree) => tree.filter(({type, path}) => type === "blob" && (_.endsWith(path, ".yml") || _.endsWith(path, ".yaml")))
+    const filterFiles = (tree) => tree.filter(({type, path}) => type === "blob" && _.endsWith(path, ".yml"))
 
     let branchesTrees = {}
     for (const {name} of branches) {
