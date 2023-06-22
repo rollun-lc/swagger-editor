@@ -20,7 +20,10 @@ export default class ManifestsList extends React.Component {
   state = {
     branches: {},
     currentBranch: "master",
-    isOpen: false
+    isOpen: false,
+    errorMessage: "",
+    hasLoadedSuccessfully: false,
+    uncommonFiles: []
   }
 
   constructor(props) {
@@ -50,6 +53,7 @@ export default class ManifestsList extends React.Component {
   }
 
   async fetchBranches() {
+    this.setState({errorMessage: "", hasLoadedSuccessfully: false})
     const {data: branches} = await this.githubOctokit.request("GET /repos/{owner}/{repo}/branches", {
       owner: REPO_OWNER,
       repo: REPO_NAME,
@@ -60,8 +64,18 @@ export default class ManifestsList extends React.Component {
     })
 
     const filterFiles = (tree) => tree.filter(({type, path}) => type === "blob" && _.endsWith(path, ".yml"))
+    const filterUncommonFiles = (tree) => tree.filter(
+      ({type, path}) =>
+        !(type === "tree" || 
+          _.endsWith(path, ".yml") || 
+          _.endsWith(path, ".png") || 
+          _.endsWith(path, ".md") || 
+          _.endsWith(path, ".json")
+      )
+    )
 
     let branchesTrees = {}
+    const uncommonFiles = []
     for (const {name} of branches) {
       const {data: {tree}} = await this.githubOctokit.request("GET /repos/{owner}/{repo}/git/trees/:sha?recursive=true", {
         owner: REPO_OWNER,
@@ -73,7 +87,9 @@ export default class ManifestsList extends React.Component {
         }
       })
       branchesTrees[name] = filterFiles(tree, "components")
+      uncommonFiles.push(...filterUncommonFiles(tree))
     }
+    this.setState(({uncommonFiles}))
     return branchesTrees
   }
 
@@ -133,6 +149,30 @@ export default class ManifestsList extends React.Component {
           <HelpButton/>
         </div>
       </section>
+      {this.state.hasLoadedSuccessfully && !this.state.errorMessage && 
+        <section className="section">
+          <h1>Manifest cache was successfuly updated</h1>
+        </section>
+      }
+      {this.state.errorMessage && 
+        <section className="section">
+          <h1>Error: {this.state.errorMessage}</h1>
+        </section>
+      }
+      {!!this.state.uncommonFiles.length &&
+        <section className="section">
+          <h1>
+            Some unusual files founded in repo: 
+          </h1>
+          <p style={{
+            fontSize: 14,
+          }}>
+            {this.state.uncommonFiles
+              .map(({path}) => path).join(", ")
+            }
+          </p>
+        </section>
+      }
       <section className='section d-flex between'>
         <label htmlFor="select-branch" className='d-flex column'>
           <span>Select mode</span>
@@ -144,7 +184,16 @@ export default class ManifestsList extends React.Component {
         </label>
         <button className='button'
                 style={{margin: "10px"}}
-                onClick={() => this.fetchBranches().then(branches => this.setBranches(branches))}>
+                onClick={
+                  () => this.fetchBranches()
+                  .then(branches => {
+                    this.setBranches(branches)
+                    this.setState({hasLoadedSuccessfully: true})
+                  })
+                  .catch(err => {
+                    this.setState({errorMessage: err.message})
+                  })
+                }>
           Refresh manifests cache
         </button>
       </section>

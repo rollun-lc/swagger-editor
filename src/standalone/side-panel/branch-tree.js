@@ -100,7 +100,7 @@ export default class BranchTree extends React.Component {
              placeholder='Start typing manifest name to search...'/>
       <div className='section even-children-darker' style={{ maxHeight: 550, overflowY: "scroll" }}>
         {filteredFiles.length === 0
-          ? <h4>Empty</h4>
+          ? <h4>Empty. Try to refresh manifest cache</h4>
           : filteredFiles.map(({path, sha}) => {
             return <div className='d-flex between'>
               <h3 key={path}>{path}</h3>
