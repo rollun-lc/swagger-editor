@@ -127,15 +127,39 @@ export const validateServers = (JSONSpec) => ({errActions, specSelectors, fn: {A
   }
 
   const regex = new RegExp(`^https?://(l.)?[a-z-]{0,40}[a-z0-9-.]{0,20}:?[0-9]{0,6}/openapi/${JSONSpec.info.title || "EmptyTitle"}/v${JSONSpec.info.version}$`)
-  const invalidTagIndex = JSONSpec.servers.findIndex(({url}) => {
+  const invalidServerIndex = JSONSpec.servers.findIndex(({url}, index) => {
+    if(url.startsWith("https://rollun.net/api/openapi/") && index > 0) {
+      return false
+    }
     return !regex.test(url)
   })
+  const invalidServerProxyIndex = JSONSpec.servers.findIndex(({url}, index) => {
+    if(url.startsWith("https://rollun.net/api/openapi/") && index > 0) {
+      const prevUrl = JSONSpec.servers[index - 1].url
+      const prevPath = prevUrl.split("/openapi/")[1]
+      if("https://rollun.net/api/openapi/" + prevPath === url) return false
+      return true
+    }
+    return false
+  })
 
-  if (invalidTagIndex > -1) {
-    const url = JSONSpec.servers[invalidTagIndex].url
+  if (invalidServerIndex > -1) {
+    const url = JSONSpec.servers[invalidServerIndex].url
     errActions.newThrownErr({
       message: `${ROLLUN_SEMANTIC_ERROR_PREFIX}-servers: url [${url}] must pass regex - ${regex.toString()}`,
-      line: AST.getLineNumberForPath(specSelectors.specStr(), ["servers", invalidTagIndex])
+      line: AST.getLineNumberForPath(specSelectors.specStr(), ["servers", invalidServerIndex])
+    })
+  }
+
+  if(invalidServerProxyIndex > -1) {
+    const url = JSONSpec.servers[invalidServerProxyIndex].url
+    const prevUrl = JSONSpec.servers[invalidServerProxyIndex - 1].url
+    const prevPath = prevUrl.split("/openapi/")[1]
+    const example = "https://rollun.net/api/openapi/" + prevPath
+    errActions.newThrownErr({
+      message: `${ROLLUN_SEMANTIC_ERROR_PREFIX}-servers: proxy url [${url}] after "/openapi/ part" must be same as - [${prevUrl}]. 
+      Example: [${example}]`,
+      line: AST.getLineNumberForPath(specSelectors.specStr(), ["servers", invalidServerProxyIndex])
     })
   }
 }
