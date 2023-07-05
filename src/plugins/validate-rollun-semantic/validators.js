@@ -116,6 +116,7 @@ export const validateTitle = (specStr) => ({errActions, specSelectors, fn: {AST}
 }
 
 export const validateServers = (JSONSpec) => ({errActions, specSelectors, fn: {AST}}) => {
+  const ROLLUN_NET_OPENAPI_URL = "https://rollun.net/api/openapi/"
 
   clearErrorsByType(ROLLUN_SEMANTIC_ERROR_PREFIX + "-servers", errActions.clearBy)
 
@@ -128,16 +129,16 @@ export const validateServers = (JSONSpec) => ({errActions, specSelectors, fn: {A
 
   const regex = new RegExp(`^https?://(l.)?[a-z-]{0,40}[a-z0-9-.]{0,20}:?[0-9]{0,6}/openapi/${JSONSpec.info.title || "EmptyTitle"}/v${JSONSpec.info.version}$`)
   const invalidServerIndex = JSONSpec.servers.findIndex(({url}, index) => {
-    if(url.startsWith("https://rollun.net/api/openapi/") && index > 0) {
+    if(url.startsWith(ROLLUN_NET_OPENAPI_URL) && index > 0) {
       return false
     }
     return !regex.test(url)
   })
   const invalidServerProxyIndex = JSONSpec.servers.findIndex(({url}, index) => {
-    if(url.startsWith("https://rollun.net/api/openapi/") && index > 0) {
+    if(url.startsWith(ROLLUN_NET_OPENAPI_URL) && index > 0) {
       const prevUrl = JSONSpec.servers[index - 1].url
       const prevPath = prevUrl.split("/openapi/")[1]
-      if("https://rollun.net/api/openapi/" + prevPath === url) return false
+      if(ROLLUN_NET_OPENAPI_URL + prevPath === url) return false
       return true
     }
     return false
@@ -155,7 +156,7 @@ export const validateServers = (JSONSpec) => ({errActions, specSelectors, fn: {A
     const url = JSONSpec.servers[invalidServerProxyIndex].url
     const prevUrl = JSONSpec.servers[invalidServerProxyIndex - 1].url
     const prevPath = prevUrl.split("/openapi/")[1]
-    const example = "https://rollun.net/api/openapi/" + prevPath
+    const example = ROLLUN_NET_OPENAPI_URL + prevPath
     errActions.newThrownErr({
       message: `${ROLLUN_SEMANTIC_ERROR_PREFIX}-servers: proxy url [${url}] after "/openapi/ part" must be same as - [${prevUrl}]. 
       Example: [${example}]`,
