@@ -143,6 +143,12 @@ export const validateServers = (JSONSpec) => ({errActions, specSelectors, fn: {A
     }
     return false
   })
+  const invalidServerTitleIndex = JSONSpec.servers.findIndex(({url}) => {
+    if(url.split("/openapi/")[1].split("/")[0] !== (JSONSpec.info.title || "EmptyTitle")) {
+      return true
+    }
+    return false
+  })
 
   if (invalidServerIndex > -1) {
     const url = JSONSpec.servers[invalidServerIndex].url
@@ -161,6 +167,15 @@ export const validateServers = (JSONSpec) => ({errActions, specSelectors, fn: {A
       message: `${ROLLUN_SEMANTIC_ERROR_PREFIX}-servers: proxy url [${url}] after "/openapi/ part" must be same as - [${prevUrl}]. 
       Example: [${example}]`,
       line: AST.getLineNumberForPath(specSelectors.specStr(), ["servers", invalidServerProxyIndex])
+    })
+  }
+
+  if (invalidServerTitleIndex > -1) {
+    const url = JSONSpec.servers[invalidServerTitleIndex].url
+    const titleFromUrl = url.split("/openapi/")[1].split("/")[0]
+    errActions.newThrownErr({
+      message: `${ROLLUN_SEMANTIC_ERROR_PREFIX}-servers: title path - [${titleFromUrl}] in [${url}] must be same as manifest title - [${JSONSpec.info.title || "EmptyTitle"}]`,
+      line: AST.getLineNumberForPath(specSelectors.specStr(), ["servers", invalidServerTitleIndex])
     })
   }
 }
