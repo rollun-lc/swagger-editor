@@ -143,12 +143,7 @@ export const validateServers = (JSONSpec) => ({errActions, specSelectors, fn: {A
     }
     return false
   })
-  const invalidServerTitleIndex = JSONSpec.servers.findIndex(({url}) => {
-    if(url.split("/openapi/")[1].split("/")[0] !== (JSONSpec.info.title || "EmptyTitle")) {
-      return true
-    }
-    return false
-  })
+  const invalidServerTitleIndex = JSONSpec.servers.findIndex(({ url }) => url.split("/openapi/")[1].split("/")[0] !== (JSONSpec.info.title || "EmptyTitle"))
 
   if (invalidServerIndex > -1) {
     const url = JSONSpec.servers[invalidServerIndex].url
