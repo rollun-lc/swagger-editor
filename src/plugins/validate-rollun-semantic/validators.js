@@ -1,6 +1,6 @@
 import {ROLLUN_SEMANTIC_ERROR_PREFIX} from "./index"
 import {clearErrorsByType} from "../refs-util"
-import {isPascalCase} from "./util"
+import {getTitleFromServerUrl, isPascalCase} from "./util"
 
 export const validateForbiddenKeys = (spec) => ({errActions}) => {
 
@@ -143,6 +143,7 @@ export const validateServers = (JSONSpec) => ({errActions, specSelectors, fn: {A
     }
     return false
   })
+  const invalidServerTitleIndex = JSONSpec.servers.findIndex(({ url }) => getTitleFromServerUrl(url) !== (JSONSpec.info.title || "EmptyTitle"))
 
   if (invalidServerIndex > -1) {
     const url = JSONSpec.servers[invalidServerIndex].url
@@ -161,6 +162,15 @@ export const validateServers = (JSONSpec) => ({errActions, specSelectors, fn: {A
       message: `${ROLLUN_SEMANTIC_ERROR_PREFIX}-servers: proxy url [${url}] after "/openapi/ part" must be same as - [${prevUrl}]. 
       Example: [${example}]`,
       line: AST.getLineNumberForPath(specSelectors.specStr(), ["servers", invalidServerProxyIndex])
+    })
+  }
+
+  if (invalidServerTitleIndex > -1) {
+    const url = JSONSpec.servers[invalidServerTitleIndex].url
+    const title = getTitleFromServerUrl(url)
+    errActions.newThrownErr({
+      message: `${ROLLUN_SEMANTIC_ERROR_PREFIX}-servers: title path - [${title}] in [${url}] must be same as manifest title - [${JSONSpec.info.title || "EmptyTitle"}]`,
+      line: AST.getLineNumberForPath(specSelectors.specStr(), ["servers", invalidServerTitleIndex])
     })
   }
 }
