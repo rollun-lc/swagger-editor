@@ -23,6 +23,9 @@ const {GIT_DIRTY, GIT_COMMIT, PACKAGE_VERSION} = buildInfo
 
 window.versions = window.versions || {}
 window.versions.swaggerEditor = `${PACKAGE_VERSION}/${GIT_COMMIT || "unknown"}${GIT_DIRTY ? "-dirty" : ""}`
+const urlParams = new URLSearchParams(window.location.search);
+const ignoreRollunSemanticErrors = urlParams.get('ignoreRollunSemanticErrors');
+
 const plugins = {
   EditorPlugin,
   ValidateBasePlugin,
@@ -39,7 +42,9 @@ const plugins = {
   SplitPaneModePlugin,
   ASTPlugin,
   ImmutableBlock,
-  ValidateRollunSemantic
+  ...(ignoreRollunSemanticErrors === 'true' && {
+    ValidateRollunSemantic,
+  })
 }
 
 const defaults = {
