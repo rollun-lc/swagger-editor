@@ -12,6 +12,8 @@ export const ROLLUN_SEMANTIC_ERROR_PREFIX = "rollun-semantic"
 const urlParams = new URLSearchParams(window.location.search);
 const ignoreRollunSemanticErrors = urlParams.get('ignoreRollunSemanticErrors');
 
+console.log(urlParams, ignoreRollunSemanticErrors);
+
 const actions = ignoreRollunSemanticErrors === 'true' ? {} : {
   validateForbiddenKeys,
   validateTags,
