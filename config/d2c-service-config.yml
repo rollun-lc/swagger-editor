@@ -1,0 +1,13 @@
+# only for initial service creation, ignored on updates
+initial-service-host: hetzner-03
+d2c-service-config:
+  type: docker
+  image: ghcr.io/rollun-lc/swagger-editor/swagger-editor/image
+  version: latest
+  # change to the name will result in new service created
+  name: swagger-editor2
+  description: Web-ui
+  project: 'Web-ui'
+  ports:
+    - value: 8080
+      protocol: TCP

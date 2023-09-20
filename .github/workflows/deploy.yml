@@ -38,11 +38,13 @@ jobs:
       - name: LS
         run: ls -la
       - name: Build
-        run: docker build -f Dockerfile -t docker.pkg.github.com/rollun-com/swagger-editor/swagger-editor:latest .
+        run: docker build -f Dockerfile -t ghcr.io/$GITHUB_REPOSITORY/$(basename $PWD)/image:latest .
       - name: Push
-        run: docker push docker.pkg.github.com/rollun-com/swagger-editor/swagger-editor:latest
+        run: docker push ghcr.io/$GITHUB_REPOSITORY/$(basename $PWD)/image:latest
       - uses: rollun-com/actions/update-d2c-service@master
         with:
-          service-name: swagger-editor2
+          config-path: ./config/d2c-service-config.yml
           d2c-email: ${{ secrets.D2C_USER }}
           d2c-password: ${{ secrets.D2C_PASSWORD }}
+          sm-user: ${{ secrets.SM_USER }}
+          sm-password: ${{ secrets.SM_PASSWORD }}
