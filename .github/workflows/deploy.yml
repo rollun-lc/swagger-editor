@@ -31,10 +31,8 @@ jobs:
         run: |
           npm run predev
           npm run build
-#      - name: Test
-#        run: npm test
       - name: Docker login
-        run: docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+        run: docker login ghcr.io -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
       - name: LS
         run: ls -la
       - name: Build
